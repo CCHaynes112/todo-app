@@ -1,0 +1,5 @@
+django
+black
+flake8
+django-extensions
+psycopg2
