@@ -29,11 +29,9 @@ export default {
       reveal: false,
     };
   },
-  mounted() {
-    this.tasks = axios.get('localhost:8000/api/v1/todos')
-      .then((res) => {
-        console.log(res)
-      })
+  async mounted() {
+    const {data} = await axios.get('/api/v1/todos');
+    this.tasks = data.tasks;
   },
   methods: {
     getTodos() {
