@@ -5,7 +5,7 @@
 
       <v-toolbar-title>Todo App</v-toolbar-title>
       <v-spacer></v-spacer>
-      <router-link tag="button" to="/">Home</router-link>
+      <router-link tag="button" to="/">Tasks</router-link>
     </v-app-bar>
   </div>
 </template>

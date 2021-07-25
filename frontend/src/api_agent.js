@@ -13,4 +13,9 @@ export class TaskClient {
             { params: params }
         )
     }
+    delete(id) {
+        return axios.delete(
+            `/v1/todos/${id}`
+        )
+    }
 }
