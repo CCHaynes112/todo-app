@@ -17,7 +17,7 @@ Demo: http://ch-tasks.com
 * Vue.js
 * Django
 * AWS services
-
+![AWS Diagram Image](https://github.com/CCHaynes112/todo-app/blob/master/AWS%20Architecture.png)
 
 ## Authors
 
