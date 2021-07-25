@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import { TaskClient } from "../api_agent";
 
 export default {
   name: "Home",
@@ -27,11 +27,12 @@ export default {
     return {
       tasks: [],
       reveal: false,
+      tc: new TaskClient(),
     };
   },
   async mounted() {
-    const {data} = await axios.get('/api/v1/todos');
-    this.tasks = data.tasks;
+    var data = await this.tc.get();
+    this.tasks = data.data.tasks
   },
   methods: {
     getTodos() {

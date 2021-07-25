@@ -12,7 +12,7 @@ class Command(BaseCommand):
         if User.objects.filter(username=username, is_superuser=True).exists():
             print("Admin exists")
         else:
-            u = User(username='admin')
+            u = User(username=username)
             password = os.getenv("ADMIN_PASSWORD", "admin")
             u.set_password(password)
             u.is_superuser = True

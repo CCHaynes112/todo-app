@@ -5,7 +5,7 @@ services:
     container_name: "nginx"
     image: nginx
     ports:
-      - "8000:8000"
+      - "8010:8010"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
     depends_on:
@@ -23,7 +23,7 @@ services:
     volumes:
       - .:/app:delegated
     ports:
-      - 8010:8010
+      - 8000:8000
     stdin_open: true
     tty: true
   
