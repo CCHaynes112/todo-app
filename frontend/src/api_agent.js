@@ -18,4 +18,16 @@ export class TaskClient {
             `/v1/todos/${id}`
         )
     }
+    patch(id, taskFields) {
+        return axios.patch(
+            `/v1/todos/${id}`,
+            taskFields
+        )
+    }
+    post(data) {
+        return axios.post(
+            '/v1/todos',
+            data
+        )
+    }
 }

@@ -1,11 +1,13 @@
 <template>
   <v-app>
-    <div>
-      <navigation />
-      <div class="main-content">
-        <router-view> </router-view>
+    <v-theme-provider root>
+      <div>
+        <navigation />
+        <div class="main-content">
+          <router-view> </router-view>
+        </div>
       </div>
-    </div>
+    </v-theme-provider>
   </v-app>
 </template>
 

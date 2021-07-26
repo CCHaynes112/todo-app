@@ -1,6 +1,5 @@
 <template>
   <div class="table-container">
-    <v-btn color="primary" elevation="2">Create Task</v-btn>
     <task-table />
   </div>
 </template>

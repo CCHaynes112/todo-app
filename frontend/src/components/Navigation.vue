@@ -6,6 +6,11 @@
       <v-toolbar-title>Todo App</v-toolbar-title>
       <v-spacer></v-spacer>
       <router-link tag="button" to="/">Tasks</router-link>
+      <v-switch
+        class="theme-toggle"
+        color="secondary"
+        v-model="$vuetify.theme.dark"
+      ></v-switch>
     </v-app-bar>
   </div>
 </template>
@@ -19,3 +24,10 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.theme-toggle {
+  margin-top: 20px !important;
+  margin-left: 20px;
+}
+</style>

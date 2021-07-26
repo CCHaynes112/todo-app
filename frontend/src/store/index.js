@@ -11,14 +11,30 @@ const tc = new TaskClient();
 export default new Vuex.Store({
   state: {
     tasks: [],
+    error: {
+      code: "",
+      message: "",
+    }
   },
   mutations: {
+    raiseError(state, error) {
+      state.error = error
+    },
+    dismissError(state) {
+      state.error = {};
+    },
     getTasks(state, tasks) {
       state.tasks = tasks;
     },
     createTask(state, taskData) {
-      console.log(taskData);
-      state.tasks.push()
+      state.tasks.push(taskData)
+    },
+    updateTask(state, taskData) {
+      for (var i = 0; i < state.tasks.length; i++) {
+        if (state.tasks[i].id === taskData.id) {
+          Object.assign(state.tasks[i], taskData);
+        }
+      }
     },
     deleteTask(state, id) {
       for (var i = 0; i < state.tasks.length; i++) {
@@ -32,23 +48,30 @@ export default new Vuex.Store({
     getTasks(context) {
       tc.get().then((res) => {
         context.commit('getTasks', res.data.tasks)
+      }).catch((err) => {
+        console.log(err)
       })
     },
     createTask(context, taskData) {
-      console.log(taskData);
-      // Post request to create task
-      context.dispatch('getTasks');
+      tc.post(taskData).then((res) => {
+        context.commit('createTask', res.data.task)
+      }).catch((err) => {
+        console.log(err)
+      })
     },
     updateTask(context, taskData) {
-      console.log(taskData);
-      // Post/Patch? request to update task
-      context.dispatch('getTasks');
+      tc.patch(taskData.id, taskData).then((res) => {
+        context.commit('updateTask', res.data.task)
+      }).catch((err) => {
+        console.log(err)
+      })
     },
     deleteTask(context, id) {
       tc.delete(id).then(() => {
         context.commit('deleteTask', id)
+      }).catch((err) => {
+        console.log(err)
       })
-      context.dispatch('getTasks');
     },
   },
   modules: {
