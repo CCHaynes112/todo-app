@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 
 
 class Command(BaseCommand):
-    help = 'Creates an initial admin user'
+    help = "Creates an initial admin user"
 
     def handle(self, *args, **options):
         username = os.getenv("ADMIN_USERNAME", "admin")

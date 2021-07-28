@@ -3,9 +3,7 @@
     <v-dialog :value="true" @click:outside="$emit('close')" width="700">
       <v-form lazy-validation ref="form" v-model="formValid">
         <v-card>
-          <v-card-title>
-            {{ action }} Task
-          </v-card-title>
+          <v-card-title> {{ action }} Task </v-card-title>
           <div class="modal-body">
             <v-text-field
               placeholder="Title"

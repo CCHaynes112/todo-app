@@ -6,6 +6,7 @@ from django.conf import settings
 from rest_framework import routers
 
 from todo.views import TaskViewSet
+from .views import UserViewSet
 
 
 def health_check(request):
@@ -13,6 +14,7 @@ def health_check(request):
 
 
 router = routers.DefaultRouter()
+router.register(r"users", UserViewSet)
 router.register(r"tasks", TaskViewSet)
 
 

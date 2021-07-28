@@ -47,21 +47,21 @@ export default new Vuex.Store({
   actions: {
     getTasks(context) {
       tc.get().then((res) => {
-        context.commit('getTasks', res.data.tasks)
+        context.commit('getTasks', res.data)
       }).catch((err) => {
         console.log(err)
       })
     },
     createTask(context, taskData) {
       tc.post(taskData).then((res) => {
-        context.commit('createTask', res.data.task)
+        context.commit('createTask', res.data)
       }).catch((err) => {
         console.log(err)
       })
     },
     updateTask(context, taskData) {
       tc.patch(taskData.id, taskData).then((res) => {
-        context.commit('updateTask', res.data.task)
+        context.commit('updateTask', res.data)
       }).catch((err) => {
         console.log(err)
       })

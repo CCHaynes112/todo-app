@@ -25,6 +25,12 @@ const darkTheme = {
 
 export default new Vuetify({
     theme: {
+        options: {
+            themeCache: {
+                get: key => localStorage.getItem(key),
+                set: (key, value) => localStorage.setItem(key, value),
+            },
+        },
         themes: {
             light: lightTheme,
             dark: darkTheme,
