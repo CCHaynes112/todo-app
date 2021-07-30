@@ -9,6 +9,7 @@ psycopg2
 
 # Django Rest Framework
 djangorestframework
+djangorestframework-simplejwt
 markdown
 django-filter
 
