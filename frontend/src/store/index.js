@@ -1,15 +1,21 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-import { TaskClient } from "../api_agent";
+import { AuthenticationClient, TaskClient } from "../api_agent";
 
 
 Vue.use(Vuex)
 
-const tc = new TaskClient();
+const authClient = new AuthenticationClient();
+const taskClient = new TaskClient();
 
 export default new Vuex.Store({
   state: {
+    auth: {
+      "access_token": null,
+      "refresh_token": null,
+    },
+    user: {},
     tasks: [],
     error: {
       code: "",
@@ -17,6 +23,15 @@ export default new Vuex.Store({
     }
   },
   mutations: {
+    logUserIn(state, data) {
+      console.log(data)
+      state.user = data.user;
+      state.auth.access_token = data.access
+      state.auth.refresh_token = data.refresh
+    },
+    logUserOut(state) {
+      state.user = null;
+    },
     raiseError(state, error) {
       state.error = error
     },
@@ -45,29 +60,43 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    logUserIn(context, userData) {
+      authClient.login(userData).then((res) => {
+        context.commit('logUserIn', res.data)
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+    logUserOut(context) {
+      authClient.logout().then(() => {
+        context.commit('logUserOut')
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
     getTasks(context) {
-      tc.get().then((res) => {
+      taskClient.get().then((res) => {
         context.commit('getTasks', res.data)
       }).catch((err) => {
         console.log(err)
       })
     },
     createTask(context, taskData) {
-      tc.post(taskData).then((res) => {
+      taskClient.post(taskData).then((res) => {
         context.commit('createTask', res.data)
       }).catch((err) => {
         console.log(err)
       })
     },
     updateTask(context, taskData) {
-      tc.patch(taskData.id, taskData).then((res) => {
+      taskClient.patch(taskData.id, taskData).then((res) => {
         context.commit('updateTask', res.data)
       }).catch((err) => {
         console.log(err)
       })
     },
     deleteTask(context, id) {
-      tc.delete(id).then(() => {
+      taskClient.delete(id).then(() => {
         context.commit('deleteTask', id)
       }).catch((err) => {
         console.log(err)

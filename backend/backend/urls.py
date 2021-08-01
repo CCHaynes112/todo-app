@@ -6,7 +6,7 @@ from django.conf import settings
 from rest_framework import routers
 
 from todo.views import TaskViewSet
-from .views import UserViewSet
+from .views import UserViewSet, LoginViewSet, RefreshViewSet
 
 
 def health_check(request):
@@ -14,8 +14,11 @@ def health_check(request):
 
 
 router = routers.DefaultRouter()
-router.register(r"users", UserViewSet)
-router.register(r"tasks", TaskViewSet)
+router.register(r"auth/login", LoginViewSet, basename="auth-login")
+# routes.register(r'auth/register', RegistrationViewSet, basename='auth-register')
+router.register(r"auth/refresh", RefreshViewSet, basename="auth-refresh")
+router.register(r"users", UserViewSet, basename='user')
+router.register(r"tasks", TaskViewSet, basename="task")
 
 
 urlpatterns = [

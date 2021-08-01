@@ -3,9 +3,25 @@
     <v-app-bar color="primary" dark dense>
       <v-app-bar-nav-icon></v-app-bar-nav-icon>
 
-      <v-toolbar-title>Todo App</v-toolbar-title>
+      <v-toolbar-title
+        ><router-link tag="button" to="/">CHTasks</router-link></v-toolbar-title
+      >
       <v-spacer></v-spacer>
-      <router-link tag="button" to="/">Tasks</router-link>
+      <router-link class="nav-link" tag="button" to="/tasks">Tasks</router-link>
+
+      <router-link class="nav-link" tag="button" to="/signup"
+        >Signup</router-link
+      >
+      <router-link
+        v-if="user.isLoggedIn"
+        class="nav-link"
+        tag="button"
+        @click="logout"
+        >Logout</router-link
+      >
+      <router-link v-else class="nav-link" tag="button" to="/login"
+        >Login</router-link
+      >
       <v-switch
         class="theme-toggle"
         color="secondary"
@@ -22,6 +38,16 @@ export default {
   data() {
     return {};
   },
+  computed: {
+    user() {
+      return this.$store.state.user;
+    },
+  },
+  methods: {
+    logout() {
+      console.log("Logging out");
+    },
+  },
 };
 </script>
 
@@ -29,5 +55,8 @@ export default {
 .theme-toggle {
   margin-top: 20px !important;
   margin-left: 20px;
+}
+.nav-link {
+  margin: 5px;
 }
 </style>
