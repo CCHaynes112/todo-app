@@ -13,7 +13,7 @@
         >Signup</router-link
       >
       <router-link
-        v-if="user.isLoggedIn"
+        v-if="isAuthenticated"
         class="nav-link"
         tag="button"
         @click="logout"
@@ -41,6 +41,9 @@ export default {
   computed: {
     user() {
       return this.$store.state.user;
+    },
+    isAuthenticated() {
+      return this.$store.state.isAuthenticated;
     },
   },
   methods: {
