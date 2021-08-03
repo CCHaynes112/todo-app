@@ -2,11 +2,11 @@ import axios from 'axios'
 import JwtService from "@/common/jwt.service";
 
 
-const LOCAL_URL = 'http://localhost:8080'
+const LOCAL_URL = 'http://localhost:8000/v1'
 const PROD_URL = 'http://api.ch-tasks.com/v1'
 
 export const axiosClient = axios.create({
-    baseURL: window.location.origin === LOCAL_URL ? LOCAL_URL : PROD_URL
+    baseURL: window.location.origin === "http://localhost:8080" ? LOCAL_URL : PROD_URL
 })
 
 const ApiService = {
@@ -68,10 +68,14 @@ export const TaskService = {
 }
 
 export const AuthService = {
-    login() {
-        return ApiService.post("auth/login");
+    login(credentials) {
+        console.log("Login from AuthService")
+        return ApiService.post("auth/login/", credentials);
     },
-    register() {
-        return ApiService.post("auth/register");
-    }
+    register(data) {
+        return ApiService.post("auth/register", data);
+    },
+    get() {
+        return ApiService.get("users");
+    },
 }

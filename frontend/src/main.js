@@ -6,8 +6,16 @@ import vuetify from './plugins/vuetify'
 
 Vue.config.productionTip = false
 
+const ungardedRoutes = [
+  'Login',
+  'Register',
+  'Home'
+]
+
 router.beforeEach((to, from, next) => {
-  if (to.name !== 'Login' && !store.state.isAuthenticated) next({ name: 'Login' })
+  console.log("Is Authenticated: " + store.state.auth.isAuthenticated)
+  store.dispatch('checkAuth');
+  if (!ungardedRoutes.includes(to.name) && !store.state.auth.isAuthenticated) next({ name: 'Login' })
   else next()
 })
 

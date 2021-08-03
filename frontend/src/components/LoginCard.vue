@@ -22,7 +22,6 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
 
 export default {
   name: "LoginCard",
@@ -37,15 +36,16 @@ export default {
     };
   },
   methods: {
-    ...mapActions({
-      logUserIn: "logUserIn",
-    }),
     submitLogin() {
       if (!this.$refs.form.validate()) {
         return;
       }
-      this.logUserIn({ username: this.username, password: this.password });
-      console.log("Logging in");
+      this.$store
+        .dispatch("logUserIn", {
+          username: this.username,
+          password: this.password,
+        })
+        .then(() => this.$router.push({ name: "Home" }));
     },
   },
 };

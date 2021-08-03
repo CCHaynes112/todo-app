@@ -7,21 +7,23 @@
         ><router-link tag="button" to="/">CHTasks</router-link></v-toolbar-title
       >
       <v-spacer></v-spacer>
-      <router-link class="nav-link" tag="button" to="/tasks">Tasks</router-link>
-
-      <router-link class="nav-link" tag="button" to="/signup"
-        >Signup</router-link
-      >
-      <router-link
-        v-if="isAuthenticated"
-        class="nav-link"
-        tag="button"
-        @click="logout"
-        >Logout</router-link
-      >
-      <router-link v-else class="nav-link" tag="button" to="/login"
-        >Login</router-link
-      >
+      <p>{{user.username}}</p>
+      <div v-if="isAuthenticated">
+        <router-link class="nav-link" tag="button" to="/tasks"
+          >Tasks</router-link
+        >
+        <router-link to="#" class="nav-link" tag="button" @click="logout"
+          >Logout</router-link
+        >
+      </div>
+      <div v-else>
+        <router-link class="nav-link" tag="button" to="/login"
+          >Login</router-link
+        >
+        <router-link class="nav-link" tag="button" to="/register"
+          >Register</router-link
+        >
+      </div>
       <v-switch
         class="theme-toggle"
         color="secondary"
@@ -40,10 +42,10 @@ export default {
   },
   computed: {
     user() {
-      return this.$store.state.user;
+      return this.$store.state.auth.user;
     },
     isAuthenticated() {
-      return this.$store.state.isAuthenticated;
+      return this.$store.state.auth.isAuthenticated;
     },
   },
   methods: {

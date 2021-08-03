@@ -4,7 +4,7 @@ import VueRouter from 'vue-router'
 import TasksView from '../views/TasksView.vue'
 import Home from '../views/Home.vue'
 import Login from '../views/Login.vue'
-import Signup from '../views/Signup.vue'
+import Register from '../views/Register.vue'
 
 
 Vue.use(VueRouter)
@@ -16,9 +16,9 @@ const routes = [
     component: Home
   },
   {
-    path: '/signup',
-    name: 'Signup',
-    component: Signup
+    path: '/register',
+    name: 'Register',
+    component: Register
   },
   {
     path: '/login',
