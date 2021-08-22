@@ -1,4 +1,4 @@
-import { AuthService } from "../common/api.service";
+import ApiService from "../common/api.service";
 import JwtService from "../common/jwt.service";
 
 
@@ -24,7 +24,7 @@ const mutations = {
 
 const actions = {
     logUserIn(context, credentials) {
-        AuthService.login(credentials).then((res) => {
+        ApiService.post("auth/login/", credentials).then((res) => {
             let user = res.data.user
             user.token = res.data.access
             context.commit('setAuth', user)
@@ -34,13 +34,14 @@ const actions = {
         context.commit('purgeAuth');
     },
     checkAuth(context) {
+        ApiService.setHeader();
         console.log("Checking auth...")
         if (JwtService.getToken()) {
             console.log("Have token")
-            return AuthService.get()
+            return ApiService.query("users", { "id": 1 })
                 .then((res) => {
                     console.log("Got user: ")
-                    console.log(res.data.user)
+                   console.log(res.data.user)
                     context.commit('setAuth', res.data.user);
                 })
         } else {

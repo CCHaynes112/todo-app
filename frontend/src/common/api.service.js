@@ -11,9 +11,12 @@ export const axiosClient = axios.create({
 
 const ApiService = {
     setHeader() {
-        axiosClient.defaults.headers["Authorization"] = `Token ${JwtService.getToken()}`
+        axiosClient.defaults.headers.common[
+            "Authorization"
+        ] = `Bearer ${JwtService.getToken()}`;
     },
     query(resource, params) {
+        console.log(axiosClient.defaults)
         return axiosClient.get(resource, params).catch((err) => {
             throw new Error(`ApiService ${err}`);
         })
@@ -65,17 +68,4 @@ export const TaskService = {
     delete(slug) {
         return ApiService.delete(`tasks`, slug);
     }
-}
-
-export const AuthService = {
-    login(credentials) {
-        console.log("Login from AuthService")
-        return ApiService.post("auth/login/", credentials);
-    },
-    register(data) {
-        return ApiService.post("auth/register", data);
-    },
-    get() {
-        return ApiService.get("users");
-    },
 }
