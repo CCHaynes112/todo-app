@@ -12,8 +12,8 @@
         <router-link class="nav-link" tag="button" to="/tasks"
           >Tasks</router-link
         >
-        <router-link to="#" class="nav-link" tag="button" @click="logout"
-          >Logout</router-link
+        <button class="nav-link" tag="button" @click="logout"
+          >Logout</button
         >
       </div>
       <div v-else>
@@ -50,7 +50,9 @@ export default {
   },
   methods: {
     logout() {
-      console.log("Logging out");
+      this.$store
+        .dispatch("logUserOut")
+        .then(() => this.$router.push({ name: "Home" }));
     },
   },
 };

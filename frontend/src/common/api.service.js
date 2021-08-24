@@ -13,10 +13,9 @@ const ApiService = {
     setHeader() {
         axiosClient.defaults.headers.common[
             "Authorization"
-        ] = `Bearer ${JwtService.getToken()}`;
+        ] = `Bearer ${JwtService.getAccessToken()}`;
     },
     query(resource, params) {
-        console.log(axiosClient.defaults)
         return axiosClient.get(resource, params).catch((err) => {
             throw new Error(`ApiService ${err}`);
         })

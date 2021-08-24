@@ -3,50 +3,56 @@ import JwtService from "../common/jwt.service";
 
 
 const state = {
-    isAuthenticated: !!JwtService.getToken(),
+    isAuthenticated: !!JwtService.getAccessToken(),
     user: {},
 }
 
 const mutations = {
     setAuth(state, user) {
-        console.log("Setting auth...");
         state.isAuthenticated = true;
         state.user = user;
-        JwtService.saveToken(state.user.token);
-        console.log("Auth set")
     },
     purgeAuth(state) {
         state.isAuthenticated = false;
         state.user = {};
-        JwtService.destroyToken();
+        JwtService.destroyTokens();
     },
 }
 
 const actions = {
     logUserIn(context, credentials) {
-        ApiService.post("auth/login/", credentials).then((res) => {
-            let user = res.data.user
-            user.token = res.data.access
-            context.commit('setAuth', user)
+        ApiService.post("auth/token", credentials).then((res) => {
+            JwtService.saveAccessToken(res.data.access);
+            JwtService.saveRefreshToken(res.data.refresh);
+            ApiService.setHeader()
+            ApiService.query("user").then((res) => {
+                context.commit('setAuth', res.data.user)
+            })
         })
     },
     logUserOut(context) {
         context.commit('purgeAuth');
     },
     checkAuth(context) {
-        ApiService.setHeader();
-        console.log("Checking auth...")
-        if (JwtService.getToken()) {
-            console.log("Have token")
-            return ApiService.query("users", { "id": 1 })
-                .then((res) => {
-                    console.log("Got user: ")
-                   console.log(res.data.user)
-                    context.commit('setAuth', res.data.user);
+        if (JwtService.getAccessToken()) {
+            ApiService.setHeader()
+            ApiService.query("user").then((res) => {
+                context.commit('setAuth', res.data.user)
+            })
+                .catch((err) => {
+                    if (err.code == "token_not_valid") {
+                        ApiService.post("auth/token/refresh", { "refresh": JwtService.getRefreshToken() }).then((res) => {
+                            JwtService.saveAccessToken(res.data.access);
+                            ApiService.setHeader()
+                            ApiService.query("user").then((res) => {
+                                context.commit('setAuth', res.data.user)
+                            })
+                        })
+                    }
                 })
-        } else {
-            console.log("No token, purging auth")
-            context.commit('purgeAuth');
+        }
+        else {
+            context.commit("purgeAuth");
         }
     }
 }

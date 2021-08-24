@@ -13,7 +13,6 @@ const ungardedRoutes = [
 ]
 
 router.beforeEach((to, from, next) => {
-  console.log("Is Authenticated: " + store.state.auth.isAuthenticated)
   store.dispatch('checkAuth');
   if (!ungardedRoutes.includes(to.name) && !store.state.auth.isAuthenticated) next({ name: 'Login' })
   else next()

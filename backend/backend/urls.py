@@ -4,27 +4,23 @@ from django.urls import path, include
 from django.conf import settings
 
 from rest_framework import routers
-
-from todo.views import TaskViewSet
-from .views import UserViewSet, LoginViewSet, RefreshViewSet
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
+from .views import UserView
 
 
 def health_check(request):
     return JsonResponse({"status": 200}, status=200)
 
 
-router = routers.DefaultRouter()
-router.register(r"auth/login", LoginViewSet, basename="auth-login")
-# routes.register(r'auth/register', RegistrationViewSet, basename='auth-register')
-router.register(r"auth/refresh", RefreshViewSet, basename="auth-refresh")
-router.register(r"users", UserViewSet, basename='user')
-router.register(r"tasks", TaskViewSet, basename="task")
-
-
 urlpatterns = [
     path("v1/admin/", admin.site.urls),
     path("v1/healthcheck", health_check),
-    path("v1/", include(router.urls)),
+    path("v1/auth/token", TokenObtainPairView.as_view(), name="token_obtain",),
+    path("v1/auth/token/refresh", TokenRefreshView.as_view(), name="token_refresh",),
+    path("v1/user", UserView.as_view(), name="user_view"),
 ]
 
 if settings.DEBUG:
