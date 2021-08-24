@@ -51,7 +51,7 @@ export default ApiService;
 
 export const TaskService = {
     query(params) {
-        return ApiService.query("tasks", {
+        return ApiService.query("tasks/", {
             params: params
         });
     },
@@ -59,10 +59,10 @@ export const TaskService = {
         return ApiService.get("tasks", slug);
     },
     create(data) {
-        return ApiService.post("tasks", { task: data });
+        return ApiService.post("tasks", data);
     },
     update(slug, data) {
-        return ApiService.update("tasks", slug, { task: data });
+        return ApiService.update("tasks", slug, data);
     },
     delete(slug) {
         return ApiService.delete(`tasks`, slug);

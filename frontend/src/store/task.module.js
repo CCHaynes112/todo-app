@@ -1,4 +1,4 @@
-import TaskService from "../common/api.service"
+import {TaskService} from "../common/api.service"
 
 
 const state = {
@@ -14,7 +14,7 @@ const mutations = {
 const actions = {
     async getTasks(context) {
         const { data } = await TaskService.query()
-        context.commit('setTasks', data.tasks)
+        context.commit('setTasks', data)
     },
     createTask(context, taskData) {
         TaskService.create(taskData)

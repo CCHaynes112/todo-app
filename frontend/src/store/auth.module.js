@@ -40,15 +40,14 @@ const actions = {
                 context.commit('setAuth', res.data.user)
             })
                 .catch((err) => {
-                    if (err.code == "token_not_valid") {
-                        ApiService.post("auth/token/refresh", { "refresh": JwtService.getRefreshToken() }).then((res) => {
-                            JwtService.saveAccessToken(res.data.access);
-                            ApiService.setHeader()
-                            ApiService.query("user").then((res) => {
-                                context.commit('setAuth', res.data.user)
-                            })
+                    console.log(err)
+                    ApiService.post("auth/token/refresh", { "refresh": JwtService.getRefreshToken() }).then((res) => {
+                        JwtService.saveAccessToken(res.data.access);
+                        ApiService.setHeader()
+                        ApiService.query("user").then((res) => {
+                            context.commit('setAuth', res.data.user)
                         })
-                    }
+                    })
                 })
         }
         else {
