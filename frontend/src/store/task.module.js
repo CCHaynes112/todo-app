@@ -16,16 +16,16 @@ const actions = {
         const { data } = await TaskService.query()
         context.commit('setTasks', data)
     },
-    createTask(context, taskData) {
-        TaskService.create(taskData)
+    async createTask(context, taskData) {
+        await TaskService.create(taskData)
         context.dispatch('getTasks')
     },
-    updateTask(context, taskData) {
-        TaskService.patch(taskData.id, taskData)
+    async updateTask(context, taskData) {
+        await TaskService.update(taskData.id, taskData)
         context.dispatch('getTasks')
     },
-    deleteTask(context, id) {
-        TaskService.delete(id)
+    async deleteTask(context, id) {
+        await TaskService.delete(id)
         context.dispatch('getTasks')
     },
 }

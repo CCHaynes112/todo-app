@@ -10,9 +10,3 @@ class TaskViewSet(viewsets.ModelViewSet):
     serializer_class = TaskSerializer
     permission_classes = [IsAuthenticated]
     queryset = Task.objects.all()
-
-    def get_object(self):
-        lookup_field_value = self.kwargs[self.lookup_field]
-        obj = Task.objects.get(lookup_field_value)
-        self.check_object_permissions(self.request, obj)
-        return obj

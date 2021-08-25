@@ -21,27 +21,27 @@ const ApiService = {
         })
     },
     get(resource, slug = "") {
-        return axiosClient.get(`${resource}/${slug}`).catch((err) => {
+        return axiosClient.get(`${resource}/${slug}/`).catch((err) => {
             throw new Error(`ApiService ${err}`);
         })
     },
     post(resource, data) {
-        return axiosClient.post(`${resource}`, data).catch((err) => {
+        return axiosClient.post(`${resource}/`, data).catch((err) => {
             throw new Error(`ApiService ${err}`);
         })
     },
     patch(resource, slug, data) {
-        return axiosClient.patch(`${resource}/${slug}`, data).catch((err) => {
+        return axiosClient.patch(`${resource}/${slug}/`, data).catch((err) => {
             throw new Error(`ApiService ${err}`);
         })
     },
     put(resource, data) {
-        return axiosClient.put(`${resource}`, data).catch((err) => {
+        return axiosClient.put(`${resource}/`, data).catch((err) => {
             throw new Error(`ApiService ${err}`);
         })
     },
     delete(resource, slug) {
-        return axiosClient.delete(`${resource}/${slug}`).catch((error) => {
+        return axiosClient.delete(`${resource}/${slug}/`).catch((error) => {
             throw new Error(`ApiService ${error}`);
         });
     }
@@ -62,7 +62,7 @@ export const TaskService = {
         return ApiService.post("tasks", data);
     },
     update(slug, data) {
-        return ApiService.update("tasks", slug, data);
+        return ApiService.patch("tasks", slug, data);
     },
     delete(slug) {
         return ApiService.delete(`tasks`, slug);
