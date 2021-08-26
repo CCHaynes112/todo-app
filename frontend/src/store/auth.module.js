@@ -34,25 +34,35 @@ const actions = {
         context.commit('purgeAuth');
     },
     checkAuth(context) {
-        if (JwtService.getAccessToken()) {
-            ApiService.setHeader()
-            ApiService.query("user").then((res) => {
-                context.commit('setAuth', res.data.user)
-            })
-                .catch((err) => {
-                    console.log(err)
-                    ApiService.post("auth/token/refresh", { "refresh": JwtService.getRefreshToken() }).then((res) => {
-                        JwtService.saveAccessToken(res.data.access);
-                        ApiService.setHeader()
-                        ApiService.query("user").then((res) => {
-                            context.commit('setAuth', res.data.user)
-                        })
+        return new Promise((resolve, reject) => {
+            if (JwtService.getAccessToken()) {
+                ApiService.setHeader()
+                ApiService.query("user")
+                    .then((res) => {
+                        context.commit('setAuth', res.data.user)
+                        resolve()
                     })
-                })
-        }
-        else {
-            context.commit("purgeAuth");
-        }
+                    .catch(() => {
+                        ApiService.post("auth/token/refresh", { "refresh": JwtService.getRefreshToken() })
+                            .then((res) => {
+                                JwtService.saveAccessToken(res.data.access);
+                                ApiService.setHeader()
+                                ApiService.query("user").then((res) => {
+                                    context.commit('setAuth', res.data.user)
+                                    resolve()
+                                })
+                            })
+                            .catch((err) => {
+                                context.commit("purgeAuth");
+                                reject(err)
+                            })
+                    })
+            }
+            else {
+                context.commit("purgeAuth");
+                resolve()
+            }
+        })
     }
 }
 

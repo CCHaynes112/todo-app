@@ -20,7 +20,7 @@ router = DefaultRouter()
 router.register(r'tasks', TaskViewSet)
 
 urlpatterns = [
-    path("v1/admin/", admin.site.urls),
+    path("v1/ch-admin/", admin.site.urls),
     path("v1/healthcheck/", health_check),
     path("v1/auth/token/", TokenObtainPairView.as_view(), name="token_obtain",),
     path("v1/auth/token/refresh/", TokenRefreshView.as_view(), name="token_refresh",),

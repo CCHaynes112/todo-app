@@ -6,7 +6,11 @@ from rest_framework.permissions import IsAuthenticated
 
 
 class TaskViewSet(viewsets.ModelViewSet):
-    http_method_names = ["get", "post", "patch", "delete"]
+    model = Task
     serializer_class = TaskSerializer
+    http_method_names = ["get", "post", "patch", "delete"]
     permission_classes = [IsAuthenticated]
-    queryset = Task.objects.all()
+    queryset = model.objects.all()
+    
+    def get_queryset(self):
+        return self.model.objects.filter(user=self.request.user)
