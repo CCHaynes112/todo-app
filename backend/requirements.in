@@ -4,6 +4,11 @@ django
 black
 flake8
 
+# Typing
+mypy
+django-stubs
+djangorestframework-stubs
+
 # Database
 psycopg2
 
