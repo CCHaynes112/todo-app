@@ -1,22 +1,21 @@
 <template>
-<login-card />
+  <login-card />
 </template>
 
 <script>
-import LoginCard from '../components/LoginCard.vue';
+import LoginCard from "../components/LoginCard.vue";
 
 export default {
   components: { LoginCard },
   name: "Login",
   data() {
-    return {
-    };
+    return {};
   },
 };
 </script>
 
 <style scoped>
 .login-card {
-    margin: auto;
+  margin: auto;
 }
 </style>

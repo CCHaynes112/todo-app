@@ -8,7 +8,7 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
-from .views import UserView
+from .views import UserView, RegisterView
 from todo.views import TaskViewSet
 
 
@@ -25,8 +25,6 @@ urlpatterns = [
     path("v1/auth/token/", TokenObtainPairView.as_view(), name="token_obtain",),
     path("v1/auth/token/refresh/", TokenRefreshView.as_view(), name="token_refresh",),
     path("v1/user/", UserView.as_view(), name="user_view"),
+    path("v1/register/", RegisterView.as_view(), name="register_user"),
     path('v1/', include(router.urls)),
 ]
-
-if settings.DEBUG:
-    urlpatterns += [path("v1/api-auth", include("rest_framework.urls", namespace="rest_framework"))]
