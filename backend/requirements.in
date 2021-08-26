@@ -1,7 +1,20 @@
 django
+
+# Linting
 black
 flake8
-django-extensions
+
+# Database
 psycopg2
-marshmallow
+
+# Django Rest Framework
+djangorestframework
+djangorestframework-simplejwt
+markdown
+django-filter
+
+# Networking
 django-cors-headers
+
+# Misc
+django-extensions

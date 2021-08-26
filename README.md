@@ -1,4 +1,4 @@
-# Todo App
+# Task Management App
 
 Basic task management app with simple CRUD functionality.
 
