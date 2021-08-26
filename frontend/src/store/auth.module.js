@@ -33,6 +33,13 @@ const actions = {
     logUserOut(context) {
         context.commit('purgeAuth');
     },
+    registerUser(context, data) {
+        ApiService.post("register", data)
+            .then((res) => {
+                console.log(res)
+                context.dispatch('logUserIn', { "username": data.username, "password": data.password })
+            })
+    },
     checkAuth(context) {
         return new Promise((resolve, reject) => {
             if (JwtService.getAccessToken()) {

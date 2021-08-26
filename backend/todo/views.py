@@ -1,4 +1,3 @@
-from django.db.models import query
 from todo.serializers import TaskSerializer
 from todo.models import Task
 from rest_framework import viewsets
@@ -11,6 +10,6 @@ class TaskViewSet(viewsets.ModelViewSet):
     http_method_names = ["get", "post", "patch", "delete"]
     permission_classes = [IsAuthenticated]
     queryset = model.objects.all()
-    
+
     def get_queryset(self):
         return self.model.objects.filter(user=self.request.user)
