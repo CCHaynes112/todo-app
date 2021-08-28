@@ -1,3 +1,8 @@
+from django.http.response import JsonResponse
+from stubs.auth_http_request import AuthenticatedHttpRequest
+from typing import Any
+from django.db.models import QuerySet
+
 from todo.serializers import TaskSerializer
 from todo.models import Task
 from rest_framework import viewsets
@@ -9,7 +14,8 @@ class TaskViewSet(viewsets.ModelViewSet):
     serializer_class = TaskSerializer
     http_method_names = ["get", "post", "patch", "delete"]
     permission_classes = [IsAuthenticated]
-    queryset = model.objects.all()
+    queryset = Task.objects.all()
+    request: AuthenticatedHttpRequest
 
-    def get_queryset(self):
-        return self.model.objects.filter(user=self.request.user)
+    def get_queryset(self) -> Any:
+        return Task.objects.filter(user=self.request.user)

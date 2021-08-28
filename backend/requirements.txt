@@ -43,7 +43,9 @@ django-stubs==1.8.0
     #   -r requirements.in
     #   djangorestframework-stubs
 django-stubs-ext==0.2.0
-    # via django-stubs
+    # via
+    #   -r requirements.in
+    #   django-stubs
 djangorestframework==3.12.4
     # via
     #   -r requirements.in
@@ -60,6 +62,8 @@ itypes==1.2.0
     # via coreapi
 jinja2==3.0.1
     # via coreschema
+lxml==4.6.3
+    # via -r requirements.in
 markdown==3.3.4
     # via -r requirements.in
 markupsafe==2.0.1

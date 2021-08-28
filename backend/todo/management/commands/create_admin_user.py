@@ -1,4 +1,5 @@
 import os
+from typing import Any
 
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
@@ -7,7 +8,7 @@ from django.contrib.auth.models import User
 class Command(BaseCommand):
     help = "Creates an initial admin user"
 
-    def handle(self, *args, **options):
+    def handle(self, *args: Any, **options: Any) -> None:
         username = os.getenv("ADMIN_USERNAME", "admin")
         if User.objects.filter(username=username, is_superuser=True).exists():
             print("Admin exists")

@@ -1,3 +1,5 @@
+from typing import Any
+from stubs.auth_http_request import AuthenticatedHttpRequest
 from django.http.response import JsonResponse
 from rest_framework import generics
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -10,7 +12,7 @@ class UserView(APIView):
     permission_classes = (IsAuthenticated,)
     http_method_names = ["get", "post"]
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request: AuthenticatedHttpRequest, *args: Any, **kwargs: Any) -> JsonResponse:
         return JsonResponse({"user": CurrentUserSerializer(request.user).data})
 
 

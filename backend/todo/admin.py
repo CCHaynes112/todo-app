@@ -3,5 +3,5 @@ from todo.models import Task
 
 
 @admin.register(Task)
-class TaskAdmin(admin.ModelAdmin):
+class TaskAdmin(admin.ModelAdmin[Task]):
     pass
