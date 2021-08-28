@@ -1,8 +1,9 @@
 from django.contrib import admin
+from django.http.request import HttpRequest
 from django.http.response import JsonResponse
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from rest_framework_simplejwt.views import (
+from rest_framework_simplejwt.views import (  # type: ignore
     TokenObtainPairView,
     TokenRefreshView,
 )
@@ -10,7 +11,7 @@ from .views import UserView, RegisterView
 from todo.views import TaskViewSet
 
 
-def health_check(request):
+def health_check(request: HttpRequest) -> JsonResponse:
     return JsonResponse({"status": 200}, status=200)
 
 

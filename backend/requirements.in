@@ -4,6 +4,12 @@ django
 black
 flake8
 
+# Typing
+mypy
+django-stubs
+djangorestframework-stubs
+django-stubs-ext
+
 # Database
 psycopg2
 
@@ -18,3 +24,4 @@ django-cors-headers
 
 # Misc
 django-extensions
+lxml
