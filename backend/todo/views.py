@@ -1,7 +1,5 @@
-from django.http.response import JsonResponse
 from stubs.auth_http_request import AuthenticatedHttpRequest
 from typing import Any
-from django.db.models import QuerySet
 
 from todo.serializers import TaskSerializer
 from todo.models import Task

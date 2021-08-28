@@ -133,4 +133,5 @@ CORS_ALLOWED_ORIGINS = [
 
 # Monkey patch for admin typing
 import django_stubs_ext  # type: ignore
+
 django_stubs_ext.monkeypatch()
