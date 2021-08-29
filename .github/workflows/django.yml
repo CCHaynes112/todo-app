@@ -36,14 +36,15 @@ jobs:
 
       - name: Install pip dependencies
         run: |
+          cd backend
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
       - name: Lint with black
-        run: black . --diff --check
+        run: cd backend; black . --diff --check
 
       - name: Lint with flake8
-        run: flake8 --show-source .
+        run: cd backend; flake8 --show-source .
 
       - name: Check migrations
         run: MIGRATE=True python manage.py makemigrations --check --dry-run
