@@ -1,0 +1,56 @@
+name: Test Django
+on:
+  push:
+    branches: [ master ]
+    paths-ignore:
+      - 'frontend/**'
+      - '.github/**'
+  pull_request:
+    paths-ignore:
+      - 'frontend/**'
+      - '.github/**'
+jobs:
+  test-django:
+    name: Test Django
+    runs-on: ubuntu-20.04
+    env:
+      DJANGO_SETTINGS_MODULE: backend.settings.ci_test
+
+    services:
+      postgres:
+        image: postgres:10
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: ci_test
+        ports: ['5432:5432']
+        options: --health-cmd pg_isready --health-interval 1s --health-timeout 5s --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: Install pip dependencies
+        run: |
+          cd backend
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Lint with black
+        run: cd backend; black . --diff --check
+
+      - name: Lint with flake8
+        run: cd backend; flake8 --show-source .
+
+      - name: Check migrations
+        run: MIGRATE=True cd backend; python manage.py makemigrations --check --dry-run
+
+      - name: Run Tests
+        run: cd backend; python manage.py test
+
+      - name: Check Types
+        run: cd backend; mypy --config-file=mypy.ini
