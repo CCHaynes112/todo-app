@@ -22,6 +22,8 @@ coreapi==2.3.3
     # via djangorestframework-stubs
 coreschema==0.0.4
     # via coreapi
+coverage==5.5
+    # via -r requirements.in
 django==3.2.5
     # via
     #   -r requirements.in
