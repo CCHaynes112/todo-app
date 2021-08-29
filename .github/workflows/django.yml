@@ -47,10 +47,10 @@ jobs:
         run: cd backend; flake8 --show-source .
 
       - name: Check migrations
-        run: MIGRATE=True python manage.py makemigrations --check --dry-run
+        run: MIGRATE=True cd backend; python manage.py makemigrations --check --dry-run
 
       - name: Run Tests
-        run: python manage.py test
+        run: cd backend; python manage.py test
 
       - name: Check Types
-        run: mypy --config-file=mypy.ini
+        run: cd backend; mypy --config-file=mypy.ini
