@@ -1,3 +1,4 @@
+from .base import *  # type: ignore # noqa
 import os
 
 DATABASES = {
