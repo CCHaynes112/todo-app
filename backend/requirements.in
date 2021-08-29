@@ -13,6 +13,9 @@ django-stubs-ext
 # Database
 psycopg2
 
+# Testing
+coverage
+
 # Django Rest Framework
 djangorestframework
 djangorestframework-simplejwt
