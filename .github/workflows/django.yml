@@ -14,7 +14,7 @@ jobs:
     name: Test Django
     runs-on: ubuntu-20.04
     env:
-      DJANGO_SETTINGS_MODULE: canary.settings.ci_test
+      DJANGO_SETTINGS_MODULE: backend.settings.ci_test
 
     services:
       postgres:
