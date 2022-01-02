@@ -1,0 +1,460 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Metadata:
+    Generator: "former2"
+Description: "Todo Cloudformation"
+Resources:
+    EC2EIP:
+        Type: "AWS::EC2::EIP"
+        Properties:
+            Domain: "vpc"
+
+    Route53HostedZone:
+        Type: "AWS::Route53::HostedZone"
+        Properties:
+            Name: !Ref Route53RecordSet
+
+    Route53RecordSet:
+        Type: "AWS::Route53::RecordSet"
+        Properties:
+            Name: !Ref Route53RecordSet2
+            Type: "A"
+            AliasTarget: 
+                HostedZoneId: "Z3AQBSTGFYJSTF"
+                DNSName: !Sub "s3-website-${AWS::Region}.amazonaws.com."
+                EvaluateTargetHealth: true
+            HostedZoneId: "Z00430723VRQYV2XQX0Q9"
+
+    Route53RecordSet2:
+        Type: "AWS::Route53::RecordSet"
+        Properties:
+            Name: !Ref Route53RecordSet3
+            Type: "NS"
+            TTL: 172800
+            ResourceRecords: 
+              - "ns-1455.awsdns-53.org."
+              - "ns-647.awsdns-16.net."
+              - "ns-362.awsdns-45.com."
+              - "ns-1911.awsdns-46.co.uk."
+            HostedZoneId: "Z00430723VRQYV2XQX0Q9"
+
+    Route53RecordSet3:
+        Type: "AWS::Route53::RecordSet"
+        Properties:
+            Name: !Sub "${S3Bucket3}."
+            Type: "SOA"
+            TTL: 900
+            ResourceRecords: 
+              - "ns-1455.awsdns-53.org. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400"
+            HostedZoneId: "Z00430723VRQYV2XQX0Q9"
+
+    Route53RecordSet4:
+        Type: "AWS::Route53::RecordSet"
+        Properties:
+            Name: !Sub "api.${Route53RecordSet}"
+            Type: "A"
+            AliasTarget: 
+                HostedZoneId: !GetAtt ElasticLoadBalancingV2LoadBalancer.CanonicalHostedZoneID
+                DNSName: !Sub "${RDSDBInstance}-backend-network-lb-9c85e5b15ad675a2.elb.${AWS::Region}.amazonaws.com."
+                EvaluateTargetHealth: true
+            HostedZoneId: !Ref Route53HostedZone
+
+    ElasticLoadBalancingV2LoadBalancer:
+        Type: "AWS::ElasticLoadBalancingV2::LoadBalancer"
+        Properties:
+            Name: !Sub "${RDSDBInstance}-backend-network-LB"
+            Scheme: "internet-facing"
+            Type: "network"
+            Subnets: 
+              - "subnet-6427f029"
+              - "subnet-0297a8fd4542be47f"
+            IpAddressType: "ipv4"
+            LoadBalancerAttributes: 
+              - 
+                Key: "access_logs.s3.enabled"
+                Value: "false"
+              - 
+                Key: "deletion_protection.enabled"
+                Value: "false"
+              - 
+                Key: "load_balancing.cross_zone.enabled"
+                Value: "false"
+
+    ElasticLoadBalancingV2Listener:
+        Type: "AWS::ElasticLoadBalancingV2::Listener"
+        Properties:
+            LoadBalancerArn: !Ref ElasticLoadBalancingV2LoadBalancer
+            Port: 80
+            Protocol: "TCP"
+            DefaultActions: 
+              - 
+                Order: 1
+                TargetGroupArn: !Ref ElasticLoadBalancingV2TargetGroup
+                Type: "forward"
+
+    EC2SecurityGroup:
+        Type: "AWS::EC2::SecurityGroup"
+        Properties:
+            GroupDescription: "2021-07-24T06:25:48.366Z"
+            GroupName: !Sub "${RDSDBInstance}-b-7628"
+            VpcId: "vpc-62530018"
+            SecurityGroupIngress: 
+              - 
+                CidrIp: "0.0.0.0/0"
+                FromPort: 0
+                IpProtocol: "tcp"
+                ToPort: 65535
+            SecurityGroupEgress: 
+              - 
+                CidrIp: "0.0.0.0/0"
+                IpProtocol: "-1"
+
+    EC2SecurityGroup2:
+        Type: "AWS::EC2::SecurityGroup"
+        Properties:
+            GroupDescription: "2021-07-19T18:46:10.520Z"
+            GroupName: !Sub "${RDSDBInstance}-b-2387"
+            Tags: 
+              - 
+                Key: "Name"
+                Value: "Todo Backend Service Security Group"
+            VpcId: "vpc-62530018"
+            SecurityGroupIngress: 
+              - 
+                SourceSecurityGroupId: !Ref EC2SecurityGroup3
+                SourceSecurityGroupOwnerId: !Ref AWS::AccountId
+                FromPort: 0
+                IpProtocol: "tcp"
+                ToPort: 65535
+            SecurityGroupEgress: 
+              - 
+                CidrIp: "0.0.0.0/0"
+                IpProtocol: "-1"
+
+    EC2SecurityGroup3:
+        Type: "AWS::EC2::SecurityGroup"
+        Properties:
+            GroupDescription: !Sub "${RDSDBInstance}-backend-LB-security-group created on 2021-07-19T11:35:32.835-07:00"
+            GroupName: !Sub "${RDSDBInstance}-backend-LB-security-group"
+            Tags: 
+              - 
+                Key: "Name"
+                Value: "Todo Backend LB Security Group"
+            VpcId: "vpc-62530018"
+            SecurityGroupIngress: 
+              - 
+                CidrIp: "0.0.0.0/0"
+                FromPort: 80
+                IpProtocol: "tcp"
+                ToPort: 80
+              - 
+                CidrIpv6: "::/0"
+                FromPort: 80
+                IpProtocol: "tcp"
+                ToPort: 80
+            SecurityGroupEgress: 
+              - 
+                CidrIp: "0.0.0.0/0"
+                IpProtocol: "-1"
+
+    ElasticLoadBalancingV2TargetGroup:
+        Type: "AWS::ElasticLoadBalancingV2::TargetGroup"
+        Properties:
+            HealthCheckIntervalSeconds: 30
+            HealthCheckPath: "/v1/healthcheck"
+            Port: 80
+            Protocol: "TCP"
+            HealthCheckPort: "traffic-port"
+            HealthCheckProtocol: "HTTP"
+            HealthCheckTimeoutSeconds: 6
+            UnhealthyThresholdCount: 3
+            TargetType: "ip"
+            Matcher: 
+                HttpCode: "200-399"
+            HealthyThresholdCount: 3
+            VpcId: "vpc-62530018"
+            Name: !Sub "${RDSDBInstance}-backend-TG"
+            HealthCheckEnabled: true
+            TargetGroupAttributes: 
+              - 
+                Key: "proxy_protocol_v2.enabled"
+                Value: "false"
+              - 
+                Key: "preserve_client_ip.enabled"
+                Value: "false"
+              - 
+                Key: "stickiness.enabled"
+                Value: "false"
+              - 
+                Key: "deregistration_delay.timeout_seconds"
+                Value: "300"
+              - 
+                Key: "stickiness.type"
+                Value: "source_ip"
+              - 
+                Key: "deregistration_delay.connection_termination.enabled"
+                Value: "false"
+
+    EC2NetworkInterface:
+        Type: "AWS::EC2::NetworkInterface"
+        Properties:
+            Description: !Sub "ELB net/${ElasticLoadBalancingV2LoadBalancer.LoadBalancerName}/9c85e5b15ad675a2"
+            PrivateIpAddress: "172.31.10.218"
+            PrivateIpAddresses: 
+              - 
+                PrivateIpAddress: "172.31.10.218"
+                Primary: true
+            SubnetId: "subnet-0297a8fd4542be47f"
+            SourceDestCheck: false
+
+    EC2NetworkInterface2:
+        Type: "AWS::EC2::NetworkInterface"
+        Properties:
+            Description: !Sub "ELB net/${ElasticLoadBalancingV2LoadBalancer.LoadBalancerName}/9c85e5b15ad675a2"
+            PrivateIpAddress: "172.31.29.32"
+            PrivateIpAddresses: 
+              - 
+                PrivateIpAddress: "172.31.29.32"
+                Primary: true
+            SubnetId: "subnet-6427f029"
+            SourceDestCheck: false
+
+    EC2NetworkInterface3:
+        Type: "AWS::EC2::NetworkInterface"
+        Properties:
+            Description: "RDSNetworkInterface"
+            PrivateIpAddress: "172.31.22.224"
+            PrivateIpAddresses: 
+              - 
+                PrivateIpAddress: "172.31.22.224"
+                Primary: true
+            SubnetId: "subnet-6427f029"
+            SourceDestCheck: true
+            GroupSet: 
+              - "sg-437a9116"
+
+    S3Bucket3:
+        Type: "AWS::S3::Bucket"
+        Properties:
+            BucketName: "ch-tasks.com"
+            WebsiteConfiguration: 
+                IndexDocument: "index.html"
+                ErrorDocument: "index.html"
+
+    S3BucketPolicy2:
+        Type: "AWS::S3::BucketPolicy"
+        Properties:
+            Bucket: !Ref S3Bucket3
+            PolicyDocument: 
+                Version: "2012-10-17"
+                Statement: 
+                  - 
+                    Sid: "PublicReadGetObject"
+                    Effect: "Allow"
+                    Principal: "*"
+                    Action: "s3:GetObject"
+                    Resource: !Sub "arn:aws:s3:::${S3Bucket3}/*"
+
+    S3StorageLens:
+        Type: "AWS::S3::StorageLens"
+        Properties:
+            StorageLensConfiguration: 
+                AccountLevel: 
+                    BucketLevel: {}
+                Id: "default-account-dashboard"
+                IsEnabled: true
+
+    RDSDBInstance:
+        Type: "AWS::RDS::DBInstance"
+        Properties:
+            DBInstanceIdentifier: "todo"
+            AllocatedStorage: 20
+            DBInstanceClass: "db.t2.micro"
+            Engine: "postgres"
+            MasterUsername: "{{MASTER_USERNAME}}"
+            MasterUserPassword: "{{ MASTER_PASSWORD }}"
+            PreferredBackupWindow: "05:26-05:56"
+            BackupRetentionPeriod: 7
+            AvailabilityZone: !Sub "${AWS::Region}b"
+            PreferredMaintenanceWindow: "sat:08:09-sat:08:39"
+            MultiAZ: false
+            EngineVersion: "12.7"
+            AutoMinorVersionUpgrade: true
+            LicenseModel: "postgresql-license"
+            PubliclyAccessible: false
+            StorageType: "gp2"
+            Port: 5432
+            StorageEncrypted: false
+            CopyTagsToSnapshot: true
+            MonitoringInterval: 60
+            EnableIAMDatabaseAuthentication: false
+            EnablePerformanceInsights: false
+            DeletionProtection: false
+            DBSubnetGroupName: "default-vpc-62530018"
+            VPCSecurityGroups: 
+              - "sg-437a9116"
+            MaxAllocatedStorage: 1000
+            DBParameterGroupName: "default.postgres12"
+            OptionGroupName: "default:postgres-12"
+            MonitoringRoleArn: !GetAtt IAMRole7.Arn
+            CACertificateIdentifier: "rds-ca-2019"
+
+    RDSDBSubnetGroup:
+        Type: "AWS::RDS::DBSubnetGroup"
+        Properties:
+            DBSubnetGroupDescription: "Created from the RDS Management Console"
+            DBSubnetGroupName: "default-vpc-62530018"
+            SubnetIds: 
+              - "subnet-3a15125d"
+              - "subnet-f28e8eae"
+              - "subnet-2b26df25"
+              - "subnet-6427f029"
+              - "subnet-c79b99e9"
+              - "subnet-5ce0ab62"
+
+    CloudFrontDistribution:
+        Type: "AWS::CloudFront::Distribution"
+        Properties:
+            DistributionConfig: 
+                Origins: 
+                  - 
+                    ConnectionAttempts: 3
+                    ConnectionTimeout: 10
+                    DomainName: !Sub "${RDSDBInstance}-frontend-bucket.s3.${AWS::Region}.amazonaws.com"
+                    Id: !Sub "${RDSDBInstance}-frontend-bucket.s3.${AWS::Region}.amazonaws.com"
+                    OriginPath: ""
+                    S3OriginConfig: 
+                        OriginAccessIdentity: ""
+                OriginGroups: 
+                    Quantity: 0
+                DefaultCacheBehavior: 
+                    AllowedMethods: 
+                      - "HEAD"
+                      - "GET"
+                    CachedMethods: 
+                      - "HEAD"
+                      - "GET"
+                    Compress: true
+                    CachePolicyId: "658327ea-f89d-4fab-a63d-7e88639e58f6"
+                    SmoothStreaming: false
+                    TargetOriginId: !Sub "${RDSDBInstance}-frontend-bucket.s3.${AWS::Region}.amazonaws.com"
+                    ViewerProtocolPolicy: "allow-all"
+                CustomErrorResponses: 
+                  - 
+                    ErrorCode: 404
+                    ResponsePagePath: "/index.html"
+                    ResponseCode: "200"
+                    ErrorCachingMinTTL: 300
+                Comment: ""
+                PriceClass: "PriceClass_All"
+                Enabled: false
+                ViewerCertificate: 
+                    CloudFrontDefaultCertificate: true
+                    MinimumProtocolVersion: "TLSv1"
+                Restrictions: 
+                    GeoRestriction: 
+                        RestrictionType: "none"
+                HttpVersion: "http2"
+                DefaultRootObject: ""
+                IPV6Enabled: true
+
+    ECRRepository:
+        Type: "AWS::ECR::Repository"
+        Properties:
+            RepositoryName: !Ref RDSDBInstance
+            LifecyclePolicy: 
+                RegistryId: !Ref AWS::AccountId
+
+    ECSCluster:
+        Type: "AWS::ECS::Cluster"
+        Properties:
+            ClusterName: !Sub "${RDSDBInstance}-cluster"
+            CapacityProviders: 
+              - "FARGATE_SPOT"
+              - "FARGATE"
+
+    ECSService:
+        Type: "AWS::ECS::Service"
+        Properties:
+            ServiceName: !Sub "${RDSDBInstance}-backend-service"
+            Cluster: !Sub "arn:aws:ecs:${AWS::Region}:${AWS::AccountId}:cluster/${RDSDBInstance}-cluster"
+            LoadBalancers: 
+              - 
+                TargetGroupArn: !Ref ElasticLoadBalancingV2TargetGroup
+                ContainerName: !Sub "${RDSDBInstance}-backend"
+                ContainerPort: 8000
+            DesiredCount: 0
+            LaunchType: "FARGATE"
+            PlatformVersion: "LATEST"
+            TaskDefinition: !Sub "arn:aws:ecs:${AWS::Region}:${AWS::AccountId}:task-definition/${RDSDBInstance}-backend:8"
+            DeploymentConfiguration: 
+                MaximumPercent: 200
+                MinimumHealthyPercent: 100
+                DeploymentCircuitBreaker: 
+                    Enable: false
+                    Rollback: false
+            Role: !Sub "arn:aws:iam::${AWS::AccountId}:role/aws-service-role/ecs.amazonaws.com/AWSServiceRoleForECS"
+            NetworkConfiguration: 
+                AwsvpcConfiguration: 
+                    AssignPublicIp: "ENABLED"
+                    SecurityGroups: 
+                      - !Ref EC2SecurityGroup
+                    Subnets: 
+                      - "subnet-6427f029"
+                      - "subnet-0297a8fd4542be47f"
+            HealthCheckGracePeriodSeconds: 0
+            SchedulingStrategy: "REPLICA"
+
+    ECSTaskDefinition:
+        Type: "AWS::ECS::TaskDefinition"
+        Properties:
+            ContainerDefinitions: 
+              - 
+                EntryPoint: 
+                  - "./start.sh"
+                Environment: 
+                  - 
+                    Name: "DJANGO_SETTINGS_MODULE"
+                    Value: "backend.settings.prod"
+                  - 
+                    Name: "ADMIN_PASSWORD"
+                    Value: "{{ ADMIN_PASSWORD }}"
+                  - 
+                    Name: "DATABASE_NAME"
+                    Value: "{{ DATABASE_NAME }}"
+                  - 
+                    Name: "DATABASE_HOST"
+                    Value: !GetAtt RDSDBInstance.Endpoint.Address
+                  - 
+                    Name: "DATABASE_PORT"
+                    Value: !Sub "${RDSDBInstance.Endpoint.Port}"
+                  - 
+                    Name: "ADMIN_USERNAME"
+                    Value: "{{ ADMIN_USERNAME }}"
+                  - 
+                    Name: "DATABASE_PASSWORD"
+                    Value: "{{ DATABASE_PASSWORD }}"
+                  - 
+                    Name: "DATABASE_USER"
+                    Value: "{{DATABASE_USER}}"
+                Essential: true
+                Image: !Sub "${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${RDSDBInstance}:latest"
+                LogConfiguration: 
+                    LogDriver: "awslogs"
+                    Options: 
+                        awslogs-group: !Sub "/ecs/${RDSDBInstance}-backend"
+                        awslogs-region: !Ref AWS::Region
+                        awslogs-stream-prefix: "ecs"
+                Name: !Sub "${RDSDBInstance}-backend"
+                PortMappings: 
+                  - 
+                    ContainerPort: 8000
+                    HostPort: 8000
+                    Protocol: "tcp"
+            Family: !Sub "${RDSDBInstance}-backend"
+            TaskRoleArn: !GetAtt IAMRole4.Arn
+            ExecutionRoleArn: !GetAtt IAMRole4.Arn
+            NetworkMode: "awsvpc"
+            RequiresCompatibilities: 
+              - "FARGATE"
+            Cpu: "1024"
+            Memory: "4096"
